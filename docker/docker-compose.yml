@@ -34,6 +34,8 @@ services:
       - MYSQL_PASSWORD=root
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_ALLOW_EMPTY_PASSWORD=1
+#    volumes:
+#      - "./db:/docker-entrypoint-initdb.d" #backs up database from out db folder
     ports:
       - "3306:3306"
   phpmyadmin:
