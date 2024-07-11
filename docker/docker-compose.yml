@@ -1,0 +1,54 @@
+version: '4'
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: docker-test
+    restart: always
+    working_dir: /var/www/
+    volumes:
+      - ../src:/var/www
+      - ./php_ini:/usr/local/etc/php
+  nginx:
+    image: nginx:1.19-alpine
+    container_name: docker-test-nginx
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - ../src:/var/www
+      - ./nginx:/etc/nginx/conf.d
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+    depends_on:
+      - db
+  db:
+    image: mysql:latest
+    environment:
+      - MYSQL_HOST=host.docker.internal:3306
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8889:80"
+    environment:
+      - PMA_HOST=host.docker.internal
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    depends_on:
+     - db
+
+
+
+
